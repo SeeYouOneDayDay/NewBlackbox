@@ -49,9 +49,13 @@ public class AbiUtils {
                     mLibs.add("armeabi");
                 } else if (name.startsWith("lib/armeabi-v7a")) {
                     mLibs.add("armeabi-v7a");
+                } else if (name.startsWith("lib/x86")) {
+                    mLibs.add("x86");
+                } else if (name.startsWith("lib/x86_64")) {
+                    mLibs.add("x86_64");
                 }
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             e.printStackTrace();
         } finally {
             CloseUtils.close(zipFile);

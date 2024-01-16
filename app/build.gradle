@@ -13,31 +13,64 @@ android {
         versionCode rootProject.ext.versionCode
         versionName rootProject.ext.versionName
 
-        manifestPlaceholders = [APP_ICON: "@mipmap/ic_launcher",
-                                APP_ROUND_ICON: "@mipmap/ic_launcher_round"]
+//        manifestPlaceholders = [APP_ICON      : "@mipmap/lls",
+//                                APP_ROUND_ICON: "@mipmap/ic_launcher_round"]
         multiDexEnabled true
+
     }
 
     signingConfigs {
         release {
-            storeFile file("release.jks")
-            storePassword "BlackBox"
-            keyAlias "BlackBox"
-            keyPassword "BlackBox"
+            storeFile file("android.store")
+            storePassword "android"
+            keyAlias "android"
+            keyPassword "android"
+
+            v1SigningEnabled true
+            v2SigningEnabled true
         }
     }
 
+
+    // NOTE: abi splits currently not supported by chaquopy
+    flavorDimensions "abi"
+    productFlavors {
+        v7a {
+            applicationId "nbox.v7a"
+            dimension "abi"
+            ndk { abiFilters "armeabi-v7a" }
+            resValue "string", "app_name", "Nv7a"
+        }
+        v8a {
+            applicationId "nbox.v8a"
+            dimension "abi"
+            ndk { abiFilters "arm64-v8a" }
+            resValue "string", "app_name", "Nv8a"
+        }
+        x86 {
+            applicationId "nbox.x86"
+            dimension "abi"
+            ndk { abiFilters "x86" }
+            resValue "string", "app_name", "Nx86"
+        }
+        x86_64 {
+            applicationId "nbox.x64"
+            dimension "abi"
+            ndk { abiFilters "x86_64" }
+            resValue "string", "app_name", "Nx64"
+        }
+    }
     buildTypes {
         debug {
             debuggable true
             jniDebuggable true
-
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
 
         release {
             debuggable false
-
+            jniDebuggable true
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -56,18 +89,35 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    dexOptions {
+        preDexLibraries false
+        maxProcessCount 8
+        javaMaxHeapSize "4g"
+    }
+    aaptOptions {
+        cruncherEnabled = false
+        useNewCruncher = false
+    }
     testOptions {
         unitTests.returnDefaultValues = true
+        resultsDir = "${project.buildDir}/ut_results"
+        // needed by robolectric
+        unitTests.includeAndroidResources = true
     }
-
-    lint {
-        abortOnError false
-        checkOnly 'NewApi', 'InlinedApi'
+    lintOptions {
         checkReleaseBuilds false
-        disable 'UnusedResources', 'RestrictedApi'
-        textOutput file('stdout')
+        quiet true
+        abortOnError false
+        ignoreWarnings false
+        textOutput "stdout"
         textReport false
-        warningsAsErrors false
+        disable "UnusedResources", 'RestrictedApi'
+        // turn off checking the given issue id's
+        disable 'TypographyFractions', 'TypographyQuotes'
+        // turn on the given issue id's
+        enable 'RtlHardcoded', 'RtlCompat', 'RtlEnabled'
+        // check *only* the given issue id's
+        check 'NewApi', 'InlinedApi'
     }
 }
 
@@ -75,7 +125,9 @@ tasks.withType(Javadoc) {
     options.addStringOption('Xdoclint:none', '-quiet')
     options.addStringOption('encoding', 'UTF-8')
     options.addStringOption('charSet', 'UTF-8')
+    options.encoding = "UTF-8"
 }
+
 
 dependencies {
     implementation project(':BCore')
