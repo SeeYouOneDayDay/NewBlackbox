@@ -46,5 +46,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "BlackBox"
+rootProject.name = "NBlackBox"
 include ':BCore', ':app', ':BCore:black-fake', ':BCore:black-hook', ':BCore:xposed', ':android-mirror'
