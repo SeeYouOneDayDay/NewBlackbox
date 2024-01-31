@@ -35,29 +35,17 @@ android {
     // NOTE: abi splits currently not supported by chaquopy
     flavorDimensions "abi"
     productFlavors {
-        v7a {
-            applicationId "nbox.v7a"
+        v32 {
+            applicationId "nbox.v32"
             dimension "abi"
-            ndk { abiFilters "armeabi-v7a" }
-            resValue "string", "app_name", "Nv7a"
+            ndk { abiFilters 'armeabi-v7a', 'x86'}
+            resValue "string", "app_name", "N32"
         }
-        v8a {
-            applicationId "nbox.v8a"
+        v64 {
+            applicationId "nbox.v64"
             dimension "abi"
-            ndk { abiFilters "arm64-v8a" }
-            resValue "string", "app_name", "Nv8a"
-        }
-        x86 {
-            applicationId "nbox.x86"
-            dimension "abi"
-            ndk { abiFilters "x86" }
-            resValue "string", "app_name", "Nx86"
-        }
-        x86_64 {
-            applicationId "nbox.x64"
-            dimension "abi"
-            ndk { abiFilters "x86_64" }
-            resValue "string", "app_name", "Nx64"
+            ndk { abiFilters 'arm64-v8a', 'x86_64'}
+            resValue "string", "app_name", "N64"
         }
     }
     buildTypes {
